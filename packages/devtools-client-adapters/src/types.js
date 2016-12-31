@@ -1,4 +1,11 @@
 // @flow
+/**
+ * These are intended to be generic types used by Firefox, Chrome, Node, and
+ * possibly others.
+ *
+ * They can be imported into clients by using the following Flow import:
+ * `import type { Location } from 'devtools-client-adapters'`
+ */
 
 /**
  * Breakpoint ID
@@ -27,7 +34,7 @@ export type ActorId = string;
 /**
  * Source File Location
  *
- * @memberof actions/types
+ * @memberof types
  * @static
  */
 export type Location = {
@@ -37,23 +44,9 @@ export type Location = {
 };
 
 /**
- * Location of an actual event, when breakpoints are set they are requested
- * at one location but the server will respond with the "actual location" where
- * the breakpoint was really set if it differs from the requested location.
- *
- * @memberof actions/types
- * @static
- */
-export type ActualLocation = {
-  source: { actor: ActorId },
-  line: number,
-  column?: number
-};
-
-/**
  * Breakpoint
  *
- * @memberof actions/types
+ * @memberof types
  * @static
  */
 export type Breakpoint = {
@@ -66,9 +59,9 @@ export type Breakpoint = {
 };
 
 /**
- * BreakpointResult
+ * Breakpoint Result is the return from an add/modify Breakpoint request
  *
- * @memberof actions/types
+ * @memberof types
  * @static
  */
 export type BreakpointResult = {
@@ -105,10 +98,34 @@ export type Frame = {
   id: FrameId,
   displayName: string,
   location: Location,
-  source: Source,
+  source?: Source,
   scope: Scope,
   // FIXME Define this type more clearly
   this: Object
+};
+
+/**
+ * Why is the Debugger Paused?
+ * This is the generic state handling the reason the debugger is paused.
+ * Reasons are usually related to "breakpoint" or "debuggerStatement"
+ * and should eventually be specified here as an enum.  For now we will
+ * just offer it as a string.
+ * @memberof types
+ * @static
+ */
+export type WhyPaused = {
+  type: string
+};
+
+/**
+ * Pause
+ * @memberof types
+ * @static
+ */
+export type Pause = {
+  frame: Frame,
+  frames: Frame[],
+  why: WhyPaused
 };
 
 /**
@@ -136,60 +153,10 @@ export type Scope = {
 };
 
 /**
- * Grip
+ * Script
+ * This describes scripts which are sent to the debug server to be eval'd
  * @memberof types
  * @static
+ * FIXME: This needs a real type definition
  */
-export type Grip = {
-
-}
-
-/**
- * SourceClient
- * @memberof types
- * @static
- */
-export type SourceClient = {
-  source: () => Source,
-  setBreakpoint: ({ line: number, column?: number, condition: boolean, noSliding: boolean}) => Promise<any>,
-  prettyPrint: (number) => Promise<*>,
-  disablePrettyPrint: () => Promise<*>
-};
-
-/**
- * ObjectClient
- * @memberof types
- * @static
- */
-export type ObjectClient = {
-  getPrototypeAndProperties: () => any
-};
-
-/**
- * ThreadClient
- * @memberof types
- * @static
- */
-export type ThreadClient = {
-  resume: (Function) => Promise<*>,
-  stepIn: (Function) => Promise<*>,
-  stepOver: (Function) => Promise<*>,
-  stepOut: (Function) => Promise<*>,
-  breakOnNext: () => Promise<*>,
-  source: ({ actor: SourceId }) => SourceClient,
-  pauseGrip: (Grip|Function) => ObjectClient,
-  pauseOnExceptions: (boolean, boolean) => Promise<*>,
-  interrupt: () => Promise<*>,
-  eventListeners: () => Promise<*>
-}
-
-/**
- * BreakpointClient
- * @memberof types
- * @static
- */
-export type BreakpointClient = {
-  actor: string,
-  remove: () => void,
-  setCondition: (ThreadClient, boolean, boolean) => Promise<BreakpointClient>
-};
+export type Script = any;

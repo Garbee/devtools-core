@@ -1,21 +1,26 @@
 // @flow
 
-import type { BreakpointId, BreakpointResult, BreakpointClient,
-              FrameId, ActorId,
-              Location, ActualLocation,
-              Source, SourceId,
-              Grip,
-              ThreadClient, ObjectClient } from '../types';
+import type {
+  BreakpointId,
+  BreakpointResult,
+  FrameId,
+  ActorId,
+  Location,
+  Script,
+  Source,
+  SourceId
+} from '../types';
 
-type Script = any;
-type TabTarget = {
-  activeConsole: { evaluateJS: (Script, Function, ?{ frameActor?: FrameId }) => void },
-  form: { consoleActor: any },
-  activeTab: { navigateTo: (string) => Promise<*>, reload: () => Promise<*> }
-}
-type DebuggerClient = {
-  _activeRequests: { get: (any) => any, delete: (any) => void }
-}
+import type {
+  TabTarget,
+  DebuggerClient,
+  ActualLocation,
+  Grip,
+  ThreadClient,
+  ObjectClient,
+  BreakpointClient,
+  BreakpointResponse
+} from './types';
 
 let bpClients : {[id:ActorId]: BreakpointClient};
 let threadClient: ThreadClient;
@@ -68,10 +73,6 @@ function sourceContents(sourceId: SourceId): Source {
   return sourceClient.source();
 }
 
-type BreakpointResponse = [
-  { actualLocation?: ActualLocation },
-  BreakpointClient
-];
 function setBreakpoint(location: Location, condition: boolean, noSliding: boolean): Promise<BreakpointResult> {
   const sourceClient = threadClient.source({ actor: location.sourceId });
 
