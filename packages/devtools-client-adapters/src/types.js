@@ -160,3 +160,17 @@ export type Scope = {
  * FIXME: This needs a real type definition
  */
 export type Script = any;
+
+/**
+ * Tab
+ * @memberof types
+ * @static
+ */
+export type Tab = {
+  title: string,
+  url: string,
+  id: string,
+  // FIXME: would be good to fill this out better
+  tab: any,
+  clientType: "chrome" | "firefox" | "node"
+};

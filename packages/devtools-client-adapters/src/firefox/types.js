@@ -146,6 +146,56 @@ export type FramesResponse = {
   from: ActorId
 }
 
+export type TabPayload = {
+  actor: ActorId,
+  animationsActor: ActorId,
+  callWatcherActor: ActorId,
+  canvasActor: ActorId,
+  consoleActor: ActorId,
+  cssPropertiesActor: ActorId,
+  cssUsageActor: ActorId,
+  directorManagerActor: ActorId,
+  emulationActor: ActorId,
+  eventLoopLagActor: ActorId,
+  framerateActor: ActorId,
+  gcliActor: ActorId,
+  inspectorActor: ActorId,
+  memoryActor: ActorId,
+  monitorActor: ActorId,
+  outerWindowID: number,
+  performanceActor: ActorId,
+  performanceEntriesActor: ActorId,
+  profilerActor: ActorId,
+  promisesActor: ActorId,
+  reflowActor: ActorId,
+  storageActor: ActorId,
+  styleEditorActor: ActorId,
+  styleSheetsActor: ActorId,
+  timelineActor: ActorId,
+  title: string,
+  url: URL,
+  webExtensionInspectedWindowActor: ActorId,
+  webaudioActor: ActorId,
+  webglActor: ActorId
+};
+
+/**
+ * Response from the `listTabs` function call
+ * @memberof firefox
+ * @static
+ */
+export type ListTabsResponse = {
+  actorRegistryActor: ActorId,
+  addonsActor: ActorId,
+  deviceActor: ActorId,
+  directorRegistryActor: ActorId,
+  from: string,
+  heapSnapshotFileActor: ActorId,
+  preferenceActor: ActorId,
+  selected: number,
+  tabs: TabPayload[]
+};
+
 /**
  * Actions
  * @memberof firefox
@@ -171,7 +221,8 @@ export type TabTarget = {
   activeTab: {
     navigateTo: (string) => Promise<*>,
     reload: () => Promise<*>
-  }
+  },
+  destroy: () => void
 }
 
 /**
@@ -189,7 +240,9 @@ export type DebuggerClient = {
   _activeRequests: {
     get: (any) => any,
     delete: (any) => void
-  }
+  },
+  connect: () => Promise<*>,
+  listTabs: () => Promise<*>
 }
 
 /**
@@ -255,7 +308,8 @@ export type ThreadClient = {
   pauseOnExceptions: (boolean, boolean) => Promise<*>,
   interrupt: () => Promise<*>,
   eventListeners: () => Promise<*>,
-  getFrames: (number, number) => FramesResponse
+  getFrames: (number, number) => FramesResponse,
+  addListener: (string, Function) => void
 };
 
 /**
